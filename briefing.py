@@ -16,12 +16,16 @@ Gemini API 키는 .env 파일의 GEMINI_API_KEY 에 넣어 주세요.
 """
 
 import json
+import os
 import re
 import ssl
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+KST = ZoneInfo("Asia/Seoul")   # 어디서 실행하든 한국 시간으로 표시
 
 # ── 경로 설정 ────────────────────────────────────────────────────
 BASE_DIR      = Path(__file__).parent   # 이 파일이 있는 폴더
@@ -268,7 +272,8 @@ def build_html(articles: list[dict], collected_at: str) -> str:
 # ── 9. 메인 로직 ─────────────────────────────────────────────────
 def main() -> None:
     env      = load_env()
-    api_key  = env.get("GEMINI_API_KEY", "")
+    # .env 파일이 우선, 없으면 환경변수(GitHub Actions 의 Secrets)에서 읽습니다
+    api_key  = env.get("GEMINI_API_KEY", "") or os.environ.get("GEMINI_API_KEY", "")
     settings = load_settings()
     keywords: list[str]  = settings.get("keywords", [])
     feeds:    list[dict] = settings.get("feeds",    [])
@@ -337,7 +342,7 @@ def main() -> None:
     print(f"\n✅ news.json 저장 완료 — {len(json_data)}건")
 
     # ⑥ index.html 저장
-    collected_at = datetime.now().strftime("%Y년 %m월 %d일 %H:%M")
+    collected_at = datetime.now(KST).strftime("%Y년 %m월 %d일 %H:%M")
     html = build_html(json_data, collected_at)
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(html)
