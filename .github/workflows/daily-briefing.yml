@@ -28,7 +28,13 @@ jobs:
       - name: 브리핑 만들기
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python briefing.py
+        run: |
+          # 키가 없으면 요약 없는 브리핑이 올라가지 않도록 여기서 멈춥니다
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::GEMINI_API_KEY 가 등록되지 않았습니다. Settings → Secrets and variables → Actions 에서 추가해 주세요."
+            exit 1
+          fi
+          python briefing.py
 
       - name: 바뀐 내용 올리기
         run: |
