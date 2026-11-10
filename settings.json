@@ -1,0 +1,18 @@
+{
+  "keywords": [
+    "독서",
+    "출판",
+    "인공지능"
+  ],
+  "feeds": [
+    {
+      "name": "경향신문 문화",
+      "url": "https://www.khan.co.kr/rss/rssdata/culture_news.xml"
+    },
+    {
+      "name": "한겨레 문화",
+      "url": "https://www.hani.co.kr/rss/culture/"
+    }
+  ]
+}
+
